@@ -1,0 +1,23 @@
+# Ignore large data folders
+frames/
+vcpkg/
+build/
+engine/build/
+dist/
+bin/
+
+# Ignore videos and samples (keep context small)
+*.mp4
+*.mkv
+*.avi
+*.mov
+
+# Ignore local environment and git
+.git/
+.venv/
+__pycache__/
+*.pyc
+
+# Ignore logs and temp files
+*.log
+config.json
