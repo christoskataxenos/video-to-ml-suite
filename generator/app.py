@@ -10,14 +10,14 @@ from tkinter import filedialog
 from datetime import datetime, timedelta
 
 # Παλέτα χρωμάτων Industrial Dark
-COLOR_BG_PRIMARY = "#111214"
+COLOR_BG_PRIMARY = "#0C0D0E"
 COLOR_BG_ELEVATED = "#181A1D"
-COLOR_BG_SUNKEN = "#0C0D0E"
-COLOR_ACCENT_BLUE = "#3A6EA5"
+COLOR_BG_SUNKEN = "#121417"
+COLOR_ACCENT = "#00E5FF" # Neon Cyan for consistency
 COLOR_ACCENT_PURPLE = "#6F4A8E"
 COLOR_ACCENT_GREEN = "#4C8C72"
-COLOR_TEXT_PRIMARY = "#E0E0E0"
-COLOR_TEXT_DIM = "#808080"
+COLOR_TEXT_BRIGHT = "#FFFFFF"
+COLOR_TEXT_DIM = "#B0B0B0"
 
 # Διαχείριση διαδρομών για τη δημιουργία ενιαίου εκτελέσιμου (PyInstaller)
 def resource_path(relative_path):
@@ -31,6 +31,7 @@ class App(ctk.CTk):
 
         self.title("FRAME EXTRACTOR")
         self.geometry("1200x850")
+        self.minsize(1200, 850)
         self.configure(fg_color=COLOR_BG_PRIMARY)
         
         self.grid_columnconfigure(0, weight=1)
@@ -45,9 +46,18 @@ class App(ctk.CTk):
         self.setup_ui()
 
     def setup_ui(self):
-        # --- ΑΡΙΣΤΕΡΗ ΣΤΗΛΗ: ΕΛΕΓΧΟΣ & BATCH ---
-        self.left_panel = ctk.CTkFrame(self, fg_color="transparent")
-        self.left_panel.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
+        # Κύριο Layout
+        self.main_container = ctk.CTkFrame(self, fg_color="transparent")
+        self.main_container.pack(fill="both", expand=True)
+
+        # Αριστερή Μπάρα Οδηγιών (Help Sidebar)
+        self.help_sidebar = ctk.CTkFrame(self.main_container, width=220, fg_color=COLOR_BG_ELEVATED, corner_radius=0)
+        self.help_sidebar.pack(side="left", fill="y")
+        self.setup_help_sidebar()
+
+        # Κεντρικό Πάνελ (Επιλογές)
+        self.left_panel = ctk.CTkFrame(self.main_container, fg_color="transparent")
+        self.left_panel.pack(side="left", fill="both", expand=True, padx=20, pady=20)
         
         self.setup_header(self.left_panel)
         
@@ -79,18 +89,53 @@ class App(ctk.CTk):
 
         self.open_folder_btn = ctk.CTkButton(
             self.left_panel, text="OPEN LAST EXPORT", height=40,
-            fg_color=COLOR_BG_ELEVATED, border_width=1, border_color=COLOR_ACCENT_BLUE,
+            fg_color=COLOR_BG_ELEVATED, border_width=1, border_color=COLOR_ACCENT,
             command=self.open_export_folder
         )
         self.open_folder_btn.pack_forget()
 
         # --- ΔΕΞΙΑ ΣΤΗΛΗ: ΠΡΟΕΠΙΣΚΟΠΗΣΗ & ΤΗΛΕΜΕΤΡΙΑ ---
-        self.right_panel = ctk.CTkFrame(self, fg_color=COLOR_BG_SUNKEN, corner_radius=15)
-        self.right_panel.grid(row=0, column=1, sticky="nsew", padx=(0, 20), pady=20)
+        self.right_panel = ctk.CTkFrame(self.main_container, fg_color=COLOR_BG_SUNKEN, corner_radius=15)
+        self.right_panel.pack(side="right", fill="both", expand=True, padx=(0, 20), pady=20)
         
         self.setup_preview(self.right_panel)
         self.setup_telemetry(self.right_panel)
         self.setup_log_area(self.right_panel)
+
+    def setup_help_sidebar(self):
+        # Header
+        ctk.CTkLabel(self.help_sidebar, text="COMMAND CENTER", font=("Consolas", 16, "bold"), text_color=COLOR_ACCENT).pack(pady=20)
+        
+        # Section 1: Extraction
+        s1 = self.create_help_section("🎥 EXTRACTION", [
+            "• Single: Process 1 video",
+            "• Batch: Process folder",
+            "• Trim: Define Start/End",
+            "• FPS: Adjust density"
+        ])
+        s1.pack(fill="x", padx=15, pady=8)
+
+        # Section 2: ML Dataset
+        s2 = self.create_help_section("🤖 ML EXPORT", [
+            "• Mode: Auto-organize",
+            "• Split: Train/Val ratio",
+            "• Classes: Define labels",
+            "• YAML: Auto-generated"
+        ])
+        s2.pack(fill="x", padx=15, pady=8)
+
+        # Section 3: Tips
+        tips = ctk.CTkFrame(self.help_sidebar, fg_color="#121417", border_width=1, border_color="#2A2D32")
+        tips.pack(fill="x", padx=15, pady=20)
+        ctk.CTkLabel(tips, text="💡 TIP", font=("Consolas", 11, "bold"), text_color=COLOR_ACCENT).pack(pady=5)
+        ctk.CTkLabel(tips, text="Use '.webp' format for\nsmaller dataset size\nwith zero loss.", font=("Consolas", 10), text_color=COLOR_TEXT_BRIGHT, justify="left").pack(pady=5, padx=10)
+
+    def create_help_section(self, title, items):
+        f = ctk.CTkFrame(self.help_sidebar, fg_color="#121417", border_width=1, border_color="#2A2D32")
+        ctk.CTkLabel(f, text=title, font=("Consolas", 12, "bold"), text_color=COLOR_ACCENT).pack(pady=(8, 4), padx=10, anchor="w")
+        for item in items:
+            ctk.CTkLabel(f, text=item, font=("Consolas", 10), text_color=COLOR_TEXT_BRIGHT, justify="left").pack(padx=15, anchor="w", pady=1)
+        return f
 
     def setup_header(self, container):
         header = ctk.CTkFrame(container, fg_color="transparent")
@@ -102,7 +147,7 @@ class App(ctk.CTk):
     def create_group(self, container, title):
         group = ctk.CTkFrame(container, fg_color=COLOR_BG_ELEVATED, corner_radius=10)
         group.pack(fill="x", pady=5)
-        ctk.CTkLabel(group, text=title.upper(), font=("Consolas", 12, "bold"), text_color=COLOR_ACCENT_BLUE).pack(anchor="w", padx=15, pady=(10, 5))
+        ctk.CTkLabel(group, text=title.upper(), font=("Consolas", 12, "bold"), text_color=COLOR_ACCENT).pack(anchor="w", padx=15, pady=(10, 5))
         return group
 
     def setup_input_controls(self, group):
@@ -163,7 +208,7 @@ class App(ctk.CTk):
         self.ml_mode_var = ctk.BooleanVar(value=False)
         self.ml_switch = ctk.CTkSwitch(
             self.ml_group, text="Enable ML Export Mode", 
-            variable=self.ml_mode_var, progress_color=COLOR_ACCENT_BLUE
+            variable=self.ml_mode_var, progress_color=COLOR_ACCENT
         )
         self.ml_switch.pack(anchor="w", padx=15, pady=5)
 
@@ -204,7 +249,7 @@ class App(ctk.CTk):
         
         f = ctk.CTkFrame(tel, fg_color="transparent")
         f.pack(fill="x")
-        self.lbl_stats = ctk.CTkLabel(f, text="Ready", font=("Consolas", 14), text_color=COLOR_TEXT_PRIMARY)
+        self.lbl_stats = ctk.CTkLabel(f, text="Ready", font=("Consolas", 14), text_color=COLOR_TEXT_BRIGHT)
         self.lbl_stats.pack(side="left")
         self.lbl_eta = ctk.CTkLabel(f, text="ETA: --:--", font=("Consolas", 12), text_color=COLOR_TEXT_DIM)
         self.lbl_eta.pack(side="right")
@@ -356,7 +401,7 @@ class App(ctk.CTk):
     def reset_ui(self):
         self.is_running = False
         self.start_btn.configure(state="normal", text="START EXTRACTION")
-        self.status_dot.configure(text="● Finished", text_color=COLOR_ACCENT_BLUE)
+        self.status_dot.configure(text="● Finished", text_color=COLOR_ACCENT)
         self.open_folder_btn.pack(fill="x", pady=10)
 
     def organize_ml_dataset(self):

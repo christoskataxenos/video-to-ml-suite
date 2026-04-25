@@ -4,9 +4,11 @@ import subprocess
 import threading
 import sys
 
-# Palette
-COLOR_BG = "#111214"
-COLOR_ACCENT = "#4C8C72" # Green for Training
+COLOR_BG = "#0C0D0E"
+COLOR_BG_ELEVATED = "#181A1D"
+COLOR_ACCENT = "#00E5FF" # Neon Cyan for consistency
+COLOR_ACCENT_GREEN = "#4C8C72"
+COLOR_TEXT_BRIGHT = "#FFFFFF"
 
 class TrainerApp(ctk.CTk):
     def __init__(self):
@@ -14,20 +16,25 @@ class TrainerApp(ctk.CTk):
 
         self.title("TRAINING LAUNCHER")
         self.geometry("900x800")
+        self.minsize(900, 800)
         self.configure(fg_color=COLOR_BG)
 
         self.is_training = False
         self.setup_ui()
 
     def setup_ui(self):
-        # Header
-        self.header = ctk.CTkFrame(self, height=80, fg_color="#181A1D")
-        self.header.pack(side="top", fill="x")
-        ctk.CTkLabel(self.header, text="MODEL TRAINER", font=("Consolas", 22, "bold")).pack(side="left", padx=30)
-        
-        # Settings Panel
-        self.main_frame = ctk.CTkFrame(self, fg_color="transparent")
-        self.main_frame.pack(fill="both", expand=True, padx=40, pady=40)
+        # Κύριο Layout
+        self.main_container = ctk.CTkFrame(self, fg_color="transparent")
+        self.main_container.pack(fill="both", expand=True)
+
+        # Αριστερή Μπάρα Οδηγιών (Help Sidebar)
+        self.help_sidebar = ctk.CTkFrame(self.main_container, width=220, fg_color=COLOR_BG_ELEVATED, corner_radius=0)
+        self.help_sidebar.pack(side="left", fill="y")
+        self.setup_help_sidebar()
+
+        # Κεντρικό Πάνελ (Ρυθμίσεις)
+        self.main_frame = ctk.CTkFrame(self.main_container, fg_color="transparent")
+        self.main_frame.pack(side="left", fill="both", expand=True, padx=40, pady=20)
 
         self.config_group = self.create_group(self.main_frame, "Training Configuration")
         
@@ -66,10 +73,44 @@ class TrainerApp(ctk.CTk):
         self.console = ctk.CTkTextbox(self.main_frame, fg_color="#0C0D0E", text_color="#AAA", font=("Consolas", 11))
         self.console.pack(fill="both", expand=True)
 
+    def setup_help_sidebar(self):
+        # Header
+        ctk.CTkLabel(self.help_sidebar, text="TRAINING GUIDE", font=("Consolas", 16, "bold"), text_color=COLOR_ACCENT).pack(pady=20)
+        
+        # Section 1: Config
+        s1 = self.create_help_section("📊 CONFIG", [
+            "• YAML: Select dataset.yaml",
+            "• Path: Must be absolute",
+            "• Split: Verified in YAML"
+        ])
+        s1.pack(fill="x", padx=15, pady=8)
+
+        # Section 2: Model
+        s2 = self.create_help_section("🧠 MODEL", [
+            "• Nano: Fastest training",
+            "• Small: Good balance",
+            "• Medium: High accuracy",
+            "• Epochs: 50-100 recommended"
+        ])
+        s2.pack(fill="x", padx=15, pady=8)
+
+        # Section 3: Tips
+        tips = ctk.CTkFrame(self.help_sidebar, fg_color="#121417", border_width=1, border_color="#2A2D32")
+        tips.pack(fill="x", padx=15, pady=20)
+        ctk.CTkLabel(tips, text="💡 TIP", font=("Consolas", 11, "bold"), text_color=COLOR_ACCENT).pack(pady=5)
+        ctk.CTkLabel(tips, text="Ensure your GPU drivers\nare updated for faster\nCUDA-accelerated training.", font=("Consolas", 10), text_color=COLOR_TEXT_BRIGHT, justify="left").pack(pady=5, padx=10)
+
+    def create_help_section(self, title, items):
+        f = ctk.CTkFrame(self.help_sidebar, fg_color="#121417", border_width=1, border_color="#2A2D32")
+        ctk.CTkLabel(f, text=title, font=("Consolas", 12, "bold"), text_color=COLOR_ACCENT).pack(pady=(8, 4), padx=10, anchor="w")
+        for item in items:
+            ctk.CTkLabel(f, text=item, font=("Consolas", 10), text_color=COLOR_TEXT_BRIGHT, justify="left").pack(padx=15, anchor="w", pady=1)
+        return f
+
     def create_group(self, container, title):
         group = ctk.CTkFrame(container, fg_color="#181A1D", corner_radius=10)
         group.pack(fill="x", pady=10)
-        ctk.CTkLabel(group, text=title.upper(), font=("Consolas", 12, "bold"), text_color="#3A6EA5").pack(anchor="w", padx=20, pady=(15, 5))
+        ctk.CTkLabel(group, text=title.upper(), font=("Consolas", 12, "bold"), text_color=COLOR_ACCENT).pack(anchor="w", padx=20, pady=(15, 5))
         return group
 
     def browse_yaml(self):

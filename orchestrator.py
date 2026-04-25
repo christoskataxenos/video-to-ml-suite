@@ -12,19 +12,21 @@ def resource_path(relative_path):
     return os.path.join(os.path.abspath("."), relative_path)
 
 # Παλέτα χρωμάτων Industrial Dark
-COLOR_BG_PRIMARY = "#111214"
+COLOR_BG_PRIMARY = "#0C0D0E"
 COLOR_BG_ELEVATED = "#181A1D"
-COLOR_ACCENT_BLUE = "#3A6EA5"
+COLOR_ACCENT = "#00E5FF" # Neon Cyan for consistency
 COLOR_ACCENT_PURPLE = "#6F4A8E"
 COLOR_ACCENT_GREEN = "#4C8C72"
-COLOR_TEXT_PRIMARY = "#E0E0E0"
+COLOR_TEXT_BRIGHT = "#FFFFFF"
+COLOR_TEXT_DIM = "#B0B0B0"
 
 class Dashboard(ctk.CTk):
     def __init__(self):
         super().__init__()
 
         self.title("VIDEO TO ML SUITE")
-        self.geometry("800x600")
+        self.geometry("1100x750")
+        self.minsize(1100, 750)
         self.configure(fg_color=COLOR_BG_PRIMARY)
         
         self.config_path = "config.json"
@@ -58,17 +60,19 @@ class Dashboard(ctk.CTk):
         self.log("Οι ρυθμίσεις αποθηκεύτηκαν επιτυχώς.")
 
     def setup_ui(self):
-        # Πλευρική μπάρα κατάστασης
-        self.sidebar = ctk.CTkFrame(self, width=200, fg_color=COLOR_BG_ELEVATED, corner_radius=0)
+        # Κύριο Layout
+        self.main_container = ctk.CTkFrame(self, fg_color="transparent")
+        self.main_container.pack(fill="both", expand=True)
+
+        # Αριστερή Μπάρα (Help & Status)
+        self.sidebar = ctk.CTkFrame(self.main_container, width=240, fg_color=COLOR_BG_ELEVATED, corner_radius=0)
         self.sidebar.pack(side="left", fill="y")
         
-        ctk.CTkLabel(self.sidebar, text="SUITE STATUS", font=("Consolas", 14, "bold"), text_color=COLOR_ACCENT_BLUE).pack(pady=(20, 10), padx=20)
-        self.status_lbl = ctk.CTkLabel(self.sidebar, text="● ALL SYSTEMS OK", text_color="#4CAF50", font=("Consolas", 11))
-        self.status_lbl.pack(padx=20)
+        self.setup_sidebar_content()
 
-        # Κύριο περιεχόμενο
-        self.main_frame = ctk.CTkFrame(self, fg_color="transparent")
-        self.main_frame.pack(side="right", fill="both", expand=True, padx=40, pady=40)
+        # Κύριο περιεχόμενο (Δεξιά)
+        self.main_frame = ctk.CTkFrame(self.main_container, fg_color="transparent")
+        self.main_frame.pack(side="right", fill="both", expand=True, padx=40, pady=20)
 
         self.header = ctk.CTkLabel(self.main_frame, text="VIDEO TO ML SUITE", font=("Consolas", 28, "bold"))
         self.header.pack(anchor="w", pady=(0, 10))
@@ -90,7 +94,7 @@ class Dashboard(ctk.CTk):
         self.btn_generator = self.create_module_btn(
             self.grid, "1. FRAME EXTRACTOR", 
             "Εξαγωγή frames από βίντεο και προετοιμασία δομής YOLO.",
-            COLOR_ACCENT_BLUE, self.launch_generator
+            COLOR_ACCENT, self.launch_generator
         )
         self.btn_generator.pack(fill="x", pady=10)
 
@@ -104,7 +108,7 @@ class Dashboard(ctk.CTk):
         self.btn_inspector = self.create_module_btn(
             self.grid, "3. DATASET INSPECTOR", 
             "Ανάλυση κατανομής κλάσεων και υγείας του dataset.",
-            COLOR_ACCENT_BLUE, self.launch_inspector
+            COLOR_ACCENT, self.launch_inspector
         )
         self.btn_inspector.pack(fill="x", pady=10)
 
@@ -125,6 +129,35 @@ class Dashboard(ctk.CTk):
         # Περιοχή καταγραφής (logs) στο κάτω μέρος
         self.log_box = ctk.CTkTextbox(self.main_frame, height=150, fg_color="#0C0D0E", text_color="#888", font=("Consolas", 10))
         self.log_box.pack(fill="x", pady=(20, 0))
+
+    def setup_sidebar_content(self):
+        # Status Section
+        ctk.CTkLabel(self.sidebar, text="SUITE STATUS", font=("Consolas", 14, "bold"), text_color=COLOR_ACCENT).pack(pady=(20, 5))
+        self.status_lbl = ctk.CTkLabel(self.sidebar, text="● ALL SYSTEMS OK", text_color="#4CAF50", font=("Consolas", 11))
+        self.status_lbl.pack()
+
+        # Divider
+        ctk.CTkFrame(self.sidebar, height=2, fg_color="#333").pack(fill="x", padx=20, pady=20)
+
+        # Guidance Section
+        ctk.CTkLabel(self.sidebar, text="WORKFLOW GUIDE", font=("Consolas", 14, "bold"), text_color=COLOR_ACCENT).pack(pady=(0, 10))
+        
+        self.create_help_box("1. EXTRACTION", "Extract frames from your raw video files.")
+        self.create_help_box("2. ANNOTATION", "Draw boxes and use Interpolation.")
+        self.create_help_box("3. INSPECTION", "Verify dataset health and balance.")
+        self.create_help_box("4. TRAINING", "Launch YOLO training on your data.")
+
+        # Tips Section
+        tips = ctk.CTkFrame(self.sidebar, fg_color="#121417", border_width=1, border_color="#2A2D32")
+        tips.pack(fill="x", padx=15, pady=20)
+        ctk.CTkLabel(tips, text="💡 PRO TIP", font=("Consolas", 11, "bold"), text_color=COLOR_ACCENT).pack(pady=5)
+        ctk.CTkLabel(tips, text="Check 'System Settings'\nto configure global paths\nbefore starting.", font=("Consolas", 10), text_color=COLOR_TEXT_BRIGHT, justify="left").pack(pady=5, padx=10)
+
+    def create_help_box(self, title, text):
+        box = ctk.CTkFrame(self.sidebar, fg_color="transparent")
+        box.pack(fill="x", padx=20, pady=5)
+        ctk.CTkLabel(box, text=title, font=("Consolas", 11, "bold"), text_color=COLOR_TEXT_BRIGHT).pack(anchor="w")
+        ctk.CTkLabel(box, text=text, font=("Consolas", 9), text_color="#888", wraplength=180, justify="left").pack(anchor="w")
 
     def create_module_btn(self, container, title, desc, color, command):
         btn_frame = ctk.CTkFrame(container, fg_color=COLOR_BG_ELEVATED, corner_radius=10, border_width=1, border_color="#333")
@@ -168,7 +201,7 @@ class Dashboard(ctk.CTk):
         self.settings_window.configure(fg_color=COLOR_BG_ELEVATED)
         self.settings_window.attributes("-topmost", True)
 
-        ctk.CTkLabel(self.settings_window, text="GLOBAL CONFIGURATION", font=("Consolas", 16, "bold"), text_color=COLOR_ACCENT_BLUE).pack(pady=20)
+        ctk.CTkLabel(self.settings_window, text="GLOBAL CONFIGURATION", font=("Consolas", 16, "bold"), text_color=COLOR_ACCENT).pack(pady=20)
 
         # Διαδρομή εξόδου
         f1 = ctk.CTkFrame(self.settings_window, fg_color="transparent")

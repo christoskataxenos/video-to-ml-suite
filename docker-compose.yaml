@@ -9,10 +9,4 @@ services:
       - DISPLAY=${DISPLAY:-:0}
     privileged: true
     network_mode: host
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+
