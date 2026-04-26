@@ -1,6 +1,6 @@
-# Full Workflow Instructions
+# Full Workflow Instructions (v2.0)
 
-This guide explains how to use the **Video to ML Suite** to build a custom computer vision model from raw video data.
+This guide explains how to use the **Video to ML Suite** to build a custom computer vision model. Version 2.0 introduces **Guided Mode**, which provides in-tool education and step-by-step guidance.
 
 ## 🔄 The Pipeline
 
@@ -18,42 +18,56 @@ graph TD
 
 ---
 
+## 🎮 Choosing Your Mode
+
+Upon launching the **Dashboard (orchestrator.py)**, you can select your experience level:
+
+- **Guided Mode**: Recommended for beginners. The dashboard tracks your progress, locks future steps until the current one is done, and provides a "Guided Panel" in each tool with ML education.
+- **Expert Mode**: For experienced users. All tools are unlocked immediately, and the standard compact sidebars are used.
+
+## 🌍 Language Support
+
+You can toggle between **Greek 🇬🇷** and **English 🇬🇧** at any time using the flag icon in the top-right corner of the Dashboard. This changes all UI text, instructions, and educational content.
+
+---
+
 ## 📍 Step 1: Frame Extraction (The Generator)
 
-The first step is to convert your video into individual images (frames).
+*Why you are here: Converting video into a series of images that the AI can understand.*
 
-1.  **Select Source**: Choose a single video file or a folder (Batch Mode).
-2.  **ML Export Mode**: **CRITICAL** - Enable this to automatically create `train/val` folders and a `dataset.yaml`.
-3.  **FPS / Trimming**: Define which part of the video you need.
-4.  **Launch**: Press **START EXTRACTION**. The C++ engine will process the video and save frames to your output directory.
+1.  **Select Source**: Choose your video file.
+2.  **Guided Steps**: In Guided Mode, simply follow the numbered steps in the left panel.
+3.  **ML Export Mode**: (Auto-enabled in Guided) This creates the `train/val` split. 80% of images are for learning, 20% for testing.
+4.  **Launch**: Press **START EXTRACTION**. The engine will process the frames.
 
 ## 📍 Step 2: Smart Annotation (The Labeler)
 
-Now, we need to tell the AI what it is looking at.
+*Why you are here: Teaching the AI what objects look like by drawing boxes.*
 
 1.  **Open Dataset**: Select the folder created in Step 1.
-2.  **Draw Boxes**: Click and drag on the image to mark objects. A popup will ask for the object name.
-3.  **Keyframe Interpolation**:
-    - Go to a frame where an object starts moving. Draw the box and press **K** (Set Keyframe).
-    - Move several frames forward. Adjust the box to the new position and press **K** again.
-    - Press **I** (Interpolate). The system will automatically calculate and draw all boxes for the frames in between.
-4.  **Save**: The tool auto-saves YOLO format `.txt` files for each image.
+2.  **Draw Boxes**: Draw rectangles around your objects.
+3.  **Smart Features**:
+    - **Keyframe Interpolation**: Draw a box on Frame A, move to Frame B, adjust the box, and press **I**. The tool fills all frames in between.
+    - **Progress Counter**: Guided Mode shows exactly how many images you have left to label.
+4.  **Save**: Labels are saved automatically as you work.
 
 ## 📍 Step 3: Dataset Inspection
 
-Before training, ensure your data is "healthy".
+*Why you are here: Checking for "health" issues like missing labels or class imbalance.*
 
-1.  **Launch Inspector**: Check for class imbalances (e.g., too many 'Cars', not enough 'Persons').
-2.  **Verify**: Ensure all images have corresponding labels and that the structure is correct.
+1.  **Load YAML**: Select the `dataset.yaml` file (Guided Mode provides a path hint).
+2.  **Analyze**: Look at the class distribution charts. Ensure you have enough examples for every object type.
+3.  **Validate**: Fix any images flagged as "unlabeled" before moving to training.
 
 ## 📍 Step 4: Model Training
 
-The final stage where the AI learns from your data.
+*Why you are here: The final learning phase where the AI processes your dataset.*
 
-1.  **Select YAML**: Browse for the `dataset.yaml` file generated in Step 1.
-2.  **Params**: Choose a model size (Nano is best for testing, Medium for accuracy).
-3.  **Start**: Press **START TRAINING**. Monitor the console for progress (mAP, Loss).
-4.  **Result**: Your trained model (`best.pt`) will be in the `runs/detect/train/weights/` folder.
+1.  **Select Model**: Guided Mode offers plain-language choices:
+    - **Nano**: Fast, great for testing.
+    - **Small/Medium**: Higher accuracy, slower training.
+2.  **Epochs**: (Default: 50) One "epoch" is one full pass through your data.
+3.  **Start**: Press **START TRAINING**. Monitor the **mAP** (Mean Average Precision) score — higher is better!
 
 ---
 
@@ -69,4 +83,4 @@ The final stage where the AI learns from your data.
 
 ---
 > [!TIP]
-> Always verify your `dataset.yaml` paths in System Settings if you move your project folders.
+> If you have already completed a step elsewhere, use the **"I've already done this"** link in the Dashboard to unlock the next step in Guided Mode.

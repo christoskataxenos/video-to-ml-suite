@@ -51,6 +51,9 @@ vcpkg_installed/
 frames/
 config.json
 *.log
+runs/
+*.pt
+rules/
 
 # IDEs
 .vscode/
