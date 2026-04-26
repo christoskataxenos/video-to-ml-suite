@@ -1,5 +1,7 @@
 # Video to ML Suite (v2.0)
 
+[![Download Release](https://img.shields.io/badge/Download-Latest%20Release-brightgreen?style=for-the-badge&logo=github)](https://github.com/christoskataxenos/video-to-ml-suite/releases/tag/latest_release)
+
 A high-performance, integrated toolkit designed for computer vision researchers and engineers to transform raw video data into production-ready ML datasets. Now upgraded to be accessible for absolute beginners while remaining a powerful tool for experts.
 
 ## 🚀 Key Features
