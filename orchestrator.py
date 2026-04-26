@@ -3,13 +3,21 @@ import subprocess
 import json
 import os
 import sys
+import multiprocessing
 from datetime import datetime
 
 # Διαχείριση διαδρομών για τη δημιουργία ενιαίου εκτελέσιμου (PyInstaller)
 def resource_path(relative_path):
     if hasattr(sys, '_MEIPASS'):
-        return os.path.join(sys._MEIPASS, relative_path)
+        # Προσθήκη του φακέλου bundle στο path για να βρίσκει τα modules
+        bundle_dir = sys._MEIPASS
+        if bundle_dir not in sys.path:
+            sys.path.append(bundle_dir)
+        return os.path.join(bundle_dir, relative_path)
     return os.path.join(os.path.abspath("."), relative_path)
+
+# Εκτέλεση του resource_path μία φορά για να μπει στο sys.path
+resource_path(".")
 
 # Παλέτα χρωμάτων Industrial Dark
 COLOR_BG_PRIMARY = "#0C0D0E"
@@ -130,6 +138,9 @@ class Dashboard(ctk.CTk):
         self.log_box = ctk.CTkTextbox(self.main_frame, height=150, fg_color="#0C0D0E", text_color="#888", font=("Consolas", 10))
         self.log_box.pack(fill="x", pady=(20, 0))
 
+        # Version Label
+        ctk.CTkLabel(self.main_frame, text="v1.1 - INDUSTRIAL UPDATE", font=("Consolas", 9), text_color="#444").pack(side="bottom", anchor="e", pady=5)
+
     def setup_sidebar_content(self):
         # Status Section
         ctk.CTkLabel(self.sidebar, text="SUITE STATUS", font=("Consolas", 14, "bold"), text_color=COLOR_ACCENT).pack(pady=(20, 5))
@@ -180,19 +191,20 @@ class Dashboard(ctk.CTk):
 
     def launch_generator(self):
         self.log(f"Εκκίνηση Generator...")
-        subprocess.Popen([sys.executable, sys.argv[0], "--generator"])
+        # Στο .exe, το sys.executable είναι το ίδιο το VideoToMLSuite.exe
+        subprocess.Popen([sys.executable, "--generator"])
 
     def launch_labeler(self):
         self.log(f"Εκκίνηση Labeler...")
-        subprocess.Popen([sys.executable, sys.argv[0], "--labeler"])
+        subprocess.Popen([sys.executable, "--labeler"])
 
     def launch_inspector(self):
         self.log(f"Εκκίνηση Inspector...")
-        subprocess.Popen([sys.executable, sys.argv[0], "--inspector"])
+        subprocess.Popen([sys.executable, "--inspector"])
 
     def launch_trainer(self):
         self.log(f"Εκκίνηση Trainer...")
-        subprocess.Popen([sys.executable, sys.argv[0], "--trainer"])
+        subprocess.Popen([sys.executable, "--trainer"])
 
     def show_settings(self):
         self.settings_window = ctk.CTkToplevel(self)
@@ -229,6 +241,9 @@ class Dashboard(ctk.CTk):
         self.settings_window.destroy()
 
 if __name__ == "__main__":
+    # Απαραίτητο για το PyInstaller exe
+    multiprocessing.freeze_support()
+    
     # Έλεγχος αν η εφαρμογή εκτελείται ως υπο-λειτουργία (module)
     if len(sys.argv) > 1:
         arg = sys.argv[1]
