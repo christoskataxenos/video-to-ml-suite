@@ -63,4 +63,8 @@ rules/
 
 # OS
 .DS_Store
-Thumbs.db
+# PolyMind (Kids Version)
+kids-version/frontend/node_modules/
+kids-version/frontend/dist/
+kids-version/backend/data/
+kids-version/backend/__pycache__/

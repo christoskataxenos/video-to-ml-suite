@@ -13,17 +13,7 @@ from PySide6.QtGui import QIcon, QPixmap, QCursor
 from PySide6.QtCore import Qt, QSize, QEvent
 
 from shared.strings import get_string
-
-# Διαχείριση διαδρομών για τη δημιουργία ενιαίου εκτελέσιμου (PyInstaller)
-def resource_path(relative_path):
-    if hasattr(sys, '_MEIPASS'):
-        bundle_dir = sys._MEIPASS
-        if bundle_dir not in sys.path:
-            sys.path.append(bundle_dir)
-        return os.path.join(bundle_dir, relative_path)
-    return os.path.join(os.path.abspath("."), relative_path)
-
-resource_path(".")
+from shared.utils import get_resource_path, load_config, save_config
 
 class Dashboard(QMainWindow):
     def __init__(self):
@@ -33,19 +23,18 @@ class Dashboard(QMainWindow):
         self.resize(1280, 800)
         self.setMinimumSize(1280, 800)
         
-        self.config_path = "config.json"
-        self.load_config()
+        self.config = load_config()
         
         # Εφαρμογή QSS StyleSheet
         try:
-            with open(resource_path("shared/style.qss"), "r", encoding="utf-8") as f:
+            with open(get_resource_path("shared/style.qss"), "r", encoding="utf-8") as f:
                 self.setStyleSheet(f.read())
         except:
             pass
 
         # Ορισμός εικονιδίου εφαρμογής
         try:
-            icon_p = resource_path(os.path.join("shared", "icon.ico"))
+            icon_p = get_resource_path(os.path.join("shared", "icon.ico"))
             if os.path.exists(icon_p):
                 self.setWindowIcon(QIcon(icon_p))
         except: pass
@@ -55,39 +44,17 @@ class Dashboard(QMainWindow):
 
     def event(self, event):
         if event.type() == QEvent.WindowActivate:
-            self.load_config()
+            self.config = load_config()
             self.setup_ui()
         return super().event(event)
 
     def load_config(self):
-        try:
-            sys_lang, _ = locale.getlocale()
-            default_lang = "el" if sys_lang and sys_lang.startswith("el") else "en"
-        except:
-            default_lang = "en"
-            
-        default_config = {
-            "output_path": "./frames",
-            "default_split": 80,
-            "engine_path": "./engine/build/Debug/engine.exe",
-            "language": default_lang,
-            "mode": "expert",
-            "completed_steps": [],
-            "bypassed_steps": []
-        }
-        if os.path.exists(self.config_path):
-            with open(self.config_path, "r", encoding="utf-8") as f:
-                try:
-                    self.config = {**default_config, **json.load(f)}
-                except:
-                    self.config = default_config
-        else:
-            self.config = default_config
+        # Redirect to shared util
+        self.config = load_config()
 
     def save_config(self):
-        with open(self.config_path, "w", encoding="utf-8") as f:
-            json.dump(self.config, f, indent=4, ensure_ascii=False)
-        self.log(get_string("config_saved"))
+        if save_config(self.config):
+            self.log(get_string("config_saved"))
 
     def setup_ui(self):
         self.central_widget = QWidget()
@@ -169,7 +136,7 @@ class Dashboard(QMainWindow):
         
         # Λογότυπο εφαρμογής
         try:
-            logo_p = resource_path(os.path.join("shared", "logo.png"))
+            logo_p = get_resource_path(os.path.join("shared", "logo.png"))
             if os.path.exists(logo_p):
                 lbl_logo = QLabel()
                 pixmap = QPixmap(logo_p).scaled(100, 100, Qt.KeepAspectRatio, Qt.SmoothTransformation)
@@ -484,29 +451,40 @@ class Dashboard(QMainWindow):
 
     def get_launch_cmd(self, module_arg):
         if hasattr(sys, '_MEIPASS'):
+            # Όταν είναι πακεταρισμένο, το sys.executable είναι το VideoToMLSuite.exe
             return [sys.executable, module_arg]
         else:
+            # Σε development mode
             return [sys.executable, "orchestrator.py", module_arg]
 
     def launch_generator(self):
         self.log(get_string("launching_generator"))
-        subprocess.Popen(self.get_launch_cmd("--generator"))
+        self._safe_launch("--generator")
 
     def launch_labeler(self):
         self.log(get_string("launching_labeler"))
-        subprocess.Popen(self.get_launch_cmd("--labeler"))
+        self._safe_launch("--labeler")
 
     def launch_inspector(self):
         self.log(get_string("launching_inspector"))
-        subprocess.Popen(self.get_launch_cmd("--inspector"))
+        self._safe_launch("--inspector")
 
     def launch_trainer(self):
         self.log(get_string("launching_trainer"))
-        subprocess.Popen(self.get_launch_cmd("--trainer"))
+        self._safe_launch("--trainer")
 
     def launch_deployer(self):
         self.log("Launching AI Deployer...")
-        subprocess.Popen(self.get_launch_cmd("--deployer"))
+        self._safe_launch("--deployer")
+
+    def _safe_launch(self, arg):
+        try:
+            cmd = self.get_launch_cmd(arg)
+            # Ορισμός του working directory στον φάκελο του εκτελεσίμου ή του script
+            cwd = os.path.dirname(os.path.abspath(sys.argv[0]))
+            subprocess.Popen(cmd, cwd=cwd)
+        except Exception as e:
+            self.log(f"Error launching module {arg}: {str(e)}")
 
     def show_settings(self):
         self.settings_window = QDialog(self)
@@ -552,6 +530,32 @@ class Dashboard(QMainWindow):
         except: pass
         self.save_config()
         self.settings_window.accept()
+
+if __name__ == "__main__":
+    multiprocessing.freeze_support()
+    
+    if len(sys.argv) > 1:
+        arg = sys.argv[1]
+        if arg == "--generator":
+            from generator import app
+            app.main()
+        elif arg == "--labeler":
+            from labeler import app
+            app.main()
+        elif arg == "--inspector":
+            from inspector import app
+            app.main()
+        elif arg == "--trainer":
+            from trainer import app
+            app.main()
+        elif arg == "--deployer":
+            from deployer import app
+            app.main()
+    else:
+        q_app = QApplication(sys.argv)
+        dashboard = Dashboard()
+        dashboard.show()
+        sys.exit(q_app.exec())
 
 if __name__ == "__main__":
     multiprocessing.freeze_support()

@@ -10,11 +10,10 @@ from PySide6.QtGui import QIcon, QPixmap, QCursor
 from PySide6.QtCore import Qt, QSize
 
 from shared.strings import get_string
+from shared.utils import get_resource_path, load_config, save_config
 
 def resource_path(relative_path):
-    if hasattr(sys, '_MEIPASS'):
-        return os.path.join(sys._MEIPASS, relative_path)
-    return os.path.join(os.path.abspath("."), "..", relative_path)
+    return get_resource_path(relative_path)
 
 class InspectorApp(QMainWindow):
     def __init__(self):
@@ -31,12 +30,7 @@ class InspectorApp(QMainWindow):
                 self.setWindowIcon(QIcon(icon_p))
         except: pass
 
-        self.config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.json")
-        try:
-            with open(self.config_path, "r", encoding="utf-8") as f:
-                self.config = json.load(f)
-        except:
-            self.config = {"mode": "expert"}
+        self.config = load_config()
 
         # Εφαρμογή QSS StyleSheet
         try:
@@ -65,7 +59,7 @@ class InspectorApp(QMainWindow):
                 {"action": "guided_ins_step3", "edu": "guided_ins_step3_edu"},
                 {"action": "guided_ins_step4", "edu": "guided_ins_step4_edu"}
             ]
-            self.help_sidebar = GuidedPanel(self.config_path, "inspection", "inspector_title", "guided_ins_why", steps, on_complete=self.close)
+            self.help_sidebar = GuidedPanel("inspection", "inspector_title", "guided_ins_why", steps, on_complete=self.close)
             main_layout.addWidget(self.help_sidebar)
 
         # Main Area

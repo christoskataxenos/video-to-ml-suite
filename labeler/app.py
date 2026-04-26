@@ -14,11 +14,10 @@ from PySide6.QtCore import Qt, QRectF, QSize, Signal, QThread
 
 import shared.strings as strings
 from shared.help_wizard import HelpWizard
+from shared.utils import get_resource_path, load_config, save_config
 
 def resource_path(relative_path):
-    if hasattr(sys, '_MEIPASS'):
-        return os.path.join(sys._MEIPASS, relative_path)
-    return os.path.join(os.path.abspath("."), "..", relative_path)
+    return get_resource_path(relative_path)
 
 class ResizeHandle(QGraphicsRectItem):
     def __init__(self, parent, index):
@@ -312,12 +311,7 @@ class LabelerApp(QMainWindow):
                 self.setWindowIcon(QIcon(icon_p))
         except: pass
         
-        self.config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.json")
-        try:
-            with open(self.config_path, "r", encoding="utf-8") as f:
-                self.config = json.load(f)
-        except:
-            self.config = {"mode": "expert"}
+        self.config = load_config()
 
         # Εφαρμογή QSS
         try:
@@ -415,7 +409,7 @@ class LabelerApp(QMainWindow):
                 {"action": "guided_lab_step4", "edu": "guided_lab_step4_edu"},
                 {"action": "guided_lab_step5", "edu": "guided_lab_step5_edu"}
             ]
-            self.help_sidebar = GuidedPanel(self.config_path, "annotation", "labeler_title", "guided_lab_why", steps, on_complete=self.close)
+            self.help_sidebar = GuidedPanel("annotation", "labeler_title", "guided_lab_why", steps, on_complete=self.close)
             body_layout.addWidget(self.help_sidebar)
         else:
             self.help_sidebar = QFrame()
@@ -1258,14 +1252,9 @@ class LabelerApp(QMainWindow):
         new_lang = "el" if self.lang == "en" else "en"
         self.lang = new_lang
         
-        # Update config.json
-        try:
-            with open(self.config_path, "r", encoding="utf-8") as f:
-                config = json.load(f)
-            config["language"] = new_lang
-            with open(self.config_path, "w", encoding="utf-8") as f:
-                json.dump(config, f, indent=4)
-        except: pass
+        # Update config
+        self.config["language"] = new_lang
+        save_config(self.config)
         
         # Refresh UI
         self.setup_ui()

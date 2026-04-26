@@ -5,8 +5,8 @@ a = Analysis(
     ['orchestrator.py'],
     pathex=[],
     binaries=[],
-    datas=[('generator', 'generator'), ('labeler', 'labeler'), ('inspector', 'inspector'), ('trainer', 'trainer'), ('shared', 'shared'), ('engine\\build\\Debug\\engine.exe', 'engine')],
-    hiddenimports=['generator.app', 'labeler.app', 'inspector.app', 'trainer.app'],
+    datas=[('generator', 'generator'), ('labeler', 'labeler'), ('inspector', 'inspector'), ('trainer', 'trainer'), ('deployer', 'deployer'), ('shared', 'shared'), ('engine\\build\\Debug\\engine.exe', 'engine')],
+    hiddenimports=['generator.app', 'labeler.app', 'inspector.app', 'trainer.app', 'deployer.app'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -32,7 +32,6 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='shared/icon.ico',
 )
 coll = COLLECT(
     exe,

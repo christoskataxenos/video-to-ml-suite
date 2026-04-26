@@ -54,11 +54,13 @@ def build_app():
         "--hidden-import", "labeler.app",
         "--hidden-import", "inspector.app",
         "--hidden-import", "trainer.app",
+        "--hidden-import", "deployer.app",
         # Syntax: source_folder;target_folder (Windows uses ;)
         "--add-data", "generator;generator",
         "--add-data", "labeler;labeler",
         "--add-data", "inspector;inspector",
         "--add-data", "trainer;trainer",
+        "--add-data", "deployer;deployer",
         "--add-data", "shared;shared",
         "--add-data", f"{engine_path};engine",
         "orchestrator.py"

@@ -1,0 +1,43 @@
+{
+  "app_title": "PolyMind",
+  "welcome": "Willkommen bei PolyMind!",
+  "mascot_greeting": "Hallo {name}! Ich bin Poly, dein KI-Freund!",
+  "mascot_ready": "Lass uns heute etwas Neues lernen!",
+  "parent": {
+    "dashboard_title": "Eltern-Dashboard",
+    "child_name_label": "Name des Kindes",
+    "child_name_placeholder": "Gib den Namen deines Kindes ein...",
+    "language_label": "Sprache",
+    "annotation_mode_label": "Spielmodus",
+    "annotation_sticker": "Sticker-Modus",
+    "annotation_sticker_desc": "Klebe Sticker auf Objekte — am besten für jüngere Kinder",
+    "annotation_catch": "Fang das Objekt",
+    "annotation_catch_desc": "Tippe auf Objekte, wenn sie erscheinen — am besten für ältere Kinder",
+    "ui_style_label": "Oberflächen-Stil",
+    "ui_mascot": "Maskottchen-Führer",
+    "ui_mascot_desc": "Ein freundlicher Charakter führt dein Kind Schritt für Schritt",
+    "ui_icon": "Nur Symbole",
+    "ui_icon_desc": "Große bunte Tasten ohne Text — visuelles Lernen",
+    "ui_audio": "Audiogesteuert",
+    "ui_audio_desc": "Jede Taste spricht ihren Namen — hilft beim Wortschatz",
+    "interaction_label": "Nach dem Training",
+    "interaction_logic": "Logik-Bausteine",
+    "interaction_logic_desc": "Wenn die KI X sieht → Mach Y (wie Scratch)",
+    "interaction_story": "Geschichtenerzähler",
+    "interaction_story_desc": "Objekte werden lebendig und sprechen mit deinem Kind",
+    "launch_button": "Kindermodus starten",
+    "save_button": "Einstellungen speichern",
+    "saved_message": "Einstellungen gespeichert!"
+  },
+  "child": {
+    "home_title": "Lass uns spielen!",
+    "start_button": "Start!",
+    "score_label": "Sterne",
+    "back_button": "Zurück"
+  },
+  "languages": {
+    "en": "English",
+    "el": "Ελληνικά",
+    "de": "Deutsch"
+  }
+}

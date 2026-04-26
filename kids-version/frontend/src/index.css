@@ -1,0 +1,461 @@
+/* ============================================================
+   PolyMind — Design System
+   Παιδικό, χρωματιστό, φιλικό προς την αφή.
+   ============================================================ */
+
+/* --- Google Fonts --- */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+/* --- CSS Variables (Design Tokens) --- */
+:root {
+  /* Χρώματα — ζεστά, φιλικά, παιχνιδιάρικα */
+  --color-primary: #6C5CE7;
+  --color-primary-light: #A29BFE;
+  --color-secondary: #00CEC9;
+  --color-accent-yellow: #FFEAA7;
+  --color-accent-pink: #FD79A8;
+  --color-accent-orange: #FAB1A0;
+  --color-accent-green: #55EFC4;
+
+  /* Backgrounds */
+  --bg-main: #F8F7FF;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #F0EEFF;
+  --bg-parent: #1E1E2E;
+  --bg-parent-card: #2A2A3E;
+
+  /* Text */
+  --text-primary: #2D3436;
+  --text-secondary: #636E72;
+  --text-light: #FFFFFF;
+  --text-muted: #B2BEC3;
+
+  /* Borders & Shadows */
+  --border-radius: 16px;
+  --border-radius-lg: 24px;
+  --border-radius-full: 9999px;
+  --shadow-soft: 0 4px 20px rgba(108, 92, 231, 0.12);
+  --shadow-medium: 0 8px 32px rgba(108, 92, 231, 0.18);
+  --shadow-glow: 0 0 20px rgba(108, 92, 231, 0.3);
+
+  /* Typography */
+  --font-kids: 'Fredoka', sans-serif;
+  --font-parent: 'Inter', sans-serif;
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+
+  /* Touch targets — μεγάλα για παιδιά */
+  --touch-min: 48px;
+  --touch-large: 64px;
+}
+
+/* --- Reset & Base --- */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: var(--font-kids);
+  background: var(--bg-main);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* --- Animations --- */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pop-in {
+  0% { transform: scale(0.8); opacity: 0; }
+  80% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: var(--shadow-soft); }
+  50% { box-shadow: var(--shadow-glow); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-3deg); }
+  75% { transform: rotate(3deg); }
+}
+
+/* --- App Layout --- */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-lg);
+}
+
+/* --- Page Header --- */
+.page-header {
+  text-align: center;
+  padding: var(--space-xl) 0 var(--space-lg);
+  animation: pop-in 0.5s ease-out;
+}
+
+.page-header h1 {
+  font-family: var(--font-kids);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: -0.5px;
+}
+
+.page-header .subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-top: var(--space-sm);
+}
+
+/* --- Cards --- */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-soft);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-medium);
+  transform: translateY(-2px);
+}
+
+.card-selectable {
+  cursor: pointer;
+  border: 3px solid transparent;
+}
+
+.card-selectable.selected {
+  border-color: var(--color-primary);
+  background: var(--bg-card-hover);
+  animation: glow-pulse 2s infinite;
+}
+
+.card-selectable:active {
+  transform: scale(0.97);
+}
+
+/* --- Buttons --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  border: none;
+  border-radius: var(--border-radius);
+  font-family: var(--font-kids);
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: var(--touch-min);
+  transition: all 0.2s ease;
+}
+
+.btn:active {
+  transform: scale(0.95);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+  color: var(--text-light);
+  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 6px 20px rgba(108, 92, 231, 0.5);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: var(--bg-card);
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary-light);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-card-hover);
+}
+
+.btn-large {
+  padding: var(--space-lg) var(--space-xl);
+  font-size: 1.4rem;
+  min-height: var(--touch-large);
+  border-radius: var(--border-radius-lg);
+}
+
+.btn-kids {
+  background: linear-gradient(135deg, var(--color-accent-yellow), var(--color-accent-orange));
+  color: var(--text-primary);
+  font-size: 1.6rem;
+  padding: var(--space-lg) var(--space-2xl);
+  border-radius: var(--border-radius-full);
+  animation: bounce 2s infinite;
+}
+
+.btn-kids:hover {
+  animation: wiggle 0.3s ease;
+}
+
+/* --- Form Elements --- */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.form-label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-input {
+  padding: var(--space-md);
+  border: 2px solid #E0DCFF;
+  border-radius: var(--border-radius);
+  font-family: var(--font-kids);
+  font-size: 1rem;
+  min-height: var(--touch-min);
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+}
+
+/* --- Grid Layouts --- */
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-md);
+  width: 100%;
+}
+
+.section {
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: var(--space-xl);
+}
+
+/* --- Language Picker --- */
+.language-picker {
+  display: flex;
+  gap: var(--space-sm);
+  padding: var(--space-xs);
+  background: var(--bg-card);
+  border-radius: var(--border-radius-full);
+  box-shadow: var(--shadow-soft);
+}
+
+.language-flag {
+  width: var(--touch-min);
+  height: var(--touch-min);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  border-radius: var(--border-radius-full);
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: transparent;
+}
+
+.language-flag:hover {
+  background: var(--bg-card-hover);
+}
+
+.language-flag.active {
+  border-color: var(--color-primary);
+  background: var(--bg-card-hover);
+  transform: scale(1.1);
+}
+
+/* --- Mascot Bubble --- */
+.mascot-container {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  animation: pop-in 0.6s ease-out;
+}
+
+.mascot-avatar {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  border-radius: var(--border-radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  animation: float 3s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.mascot-bubble {
+  background: var(--bg-card);
+  border-radius: var(--border-radius-lg);
+  border-bottom-left-radius: var(--space-xs);
+  padding: var(--space-md) var(--space-lg);
+  box-shadow: var(--shadow-soft);
+  position: relative;
+  max-width: 400px;
+}
+
+.mascot-bubble p {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+/* --- Kids Home Background --- */
+.kids-home {
+  min-height: 100vh;
+  background: linear-gradient(
+    180deg,
+    #F8F7FF 0%,
+    #E8E4FF 40%,
+    #D4F1F9 70%,
+    #E8FFE8 100%
+  );
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xl);
+  padding: var(--space-xl);
+  text-align: center;
+}
+
+.kids-home h1 {
+  font-size: 3rem;
+  color: var(--color-primary);
+  animation: pop-in 0.5s ease-out;
+}
+
+.kids-score {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 1.5rem;
+  color: var(--color-accent-pink);
+  font-weight: 700;
+}
+
+/* --- Parent Dashboard (Dark Theme) --- */
+.parent-dashboard {
+  min-height: 100vh;
+  background: var(--bg-parent);
+  color: var(--text-light);
+  padding: var(--space-xl);
+  font-family: var(--font-parent);
+}
+
+.parent-dashboard .page-header h1 {
+  color: var(--color-primary-light);
+}
+
+.parent-dashboard .card {
+  background: var(--bg-parent-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.parent-dashboard .card-selectable.selected {
+  border-color: var(--color-primary-light);
+  background: rgba(108, 92, 231, 0.15);
+}
+
+.parent-dashboard .form-label {
+  color: var(--text-muted);
+}
+
+.parent-dashboard .form-input {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+}
+
+.parent-dashboard .form-input:focus {
+  border-color: var(--color-primary-light);
+}
+
+/* --- Toast / Saved Message --- */
+.toast {
+  position: fixed;
+  bottom: var(--space-lg);
+  right: var(--space-lg);
+  background: var(--color-accent-green);
+  color: var(--text-primary);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  animation: pop-in 0.3s ease-out;
+  z-index: 1000;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .page-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .kids-home h1 {
+    font-size: 2rem;
+  }
+
+  .options-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mascot-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .mascot-bubble {
+    border-bottom-left-radius: var(--border-radius-lg);
+  }
+}

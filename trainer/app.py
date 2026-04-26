@@ -10,11 +10,10 @@ from PySide6.QtGui import QIcon, QPixmap, QCursor
 from PySide6.QtCore import Qt, QThread, Signal, QSize
 
 from shared.strings import get_string
+from shared.utils import get_resource_path, load_config, save_config
 
 def resource_path(relative_path):
-    if hasattr(sys, '_MEIPASS'):
-        return os.path.join(sys._MEIPASS, relative_path)
-    return os.path.join(os.path.abspath("."), "..", relative_path)
+    return get_resource_path(relative_path)
 
 class TrainingWorker(QThread):
     log_signal = Signal(str)
@@ -59,12 +58,7 @@ class TrainerApp(QMainWindow):
                 self.setWindowIcon(QIcon(icon_p))
         except: pass
 
-        self.config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.json")
-        try:
-            with open(self.config_path, "r", encoding="utf-8") as f:
-                self.config = json.load(f)
-        except:
-            self.config = {"mode": "expert"}
+        self.config = load_config()
 
         # Εφαρμογή QSS StyleSheet
         try:
@@ -90,7 +84,7 @@ class TrainerApp(QMainWindow):
                 {"action": "guided_tra_step3", "edu": "guided_tra_step3_edu"},
                 {"action": "guided_tra_step4", "edu": "guided_tra_step4_edu"}
             ]
-            self.help_sidebar = GuidedPanel(self.config_path, "training", "trainer_title", "guided_tra_why", steps, on_complete=self.close)
+            self.help_sidebar = GuidedPanel("training", "trainer_title", "guided_tra_why", steps, on_complete=self.close)
             main_layout.addWidget(self.help_sidebar)
 
         # Main Area
@@ -221,10 +215,7 @@ class TrainerApp(QMainWindow):
     def toggle_language(self):
         new_lang = "en" if self.config.get("language") == "el" else "el"
         self.config["language"] = new_lang
-        with open(self.config_path, "w", encoding="utf-8") as f:
-            json.dump(self.config, f, indent=4)
-        self.lang_btn.setText("ΕΛ" if new_lang == "el" else "EN")
-        self.centralWidget().deleteLater()
+        save_config(self.config)
         self.setup_ui()
 
     def show_help(self):

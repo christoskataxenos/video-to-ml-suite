@@ -11,11 +11,10 @@ from PySide6.QtGui import QIcon, QPixmap, QImage, QCursor
 from PySide6.QtCore import Qt, QThread, Signal, QSize, QTimer
 
 from shared.strings import get_string
+from shared.utils import get_resource_path, load_config, save_config
 
 def resource_path(relative_path):
-    if hasattr(sys, '_MEIPASS'):
-        return os.path.join(sys._MEIPASS, relative_path)
-    return os.path.join(os.path.abspath("."), "..", relative_path)
+    return get_resource_path(relative_path)
 
 class InferenceThread(QThread):
     frame_signal = Signal(np.ndarray)
@@ -65,11 +64,7 @@ class DeployerApp(QMainWindow):
                 self.setWindowIcon(QIcon(icon_p))
         except: pass
 
-        self.config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.json")
-        try:
-            with open(self.config_path, "r", encoding="utf-8") as f:
-                self.config = json.load(f)
-        except: self.config = {"mode": "expert"}
+        self.config = load_config()
 
         try:
             with open(resource_path("shared/style.qss"), "r", encoding="utf-8") as f:
@@ -96,7 +91,7 @@ class DeployerApp(QMainWindow):
                 {"action": "guided_dep_step3", "edu": "guided_dep_step3_edu"},
                 {"action": "guided_dep_step4", "edu": "guided_dep_step4_edu"}
             ]
-            self.help_sidebar = GuidedPanel(self.config_path, "deployment", "deployer_title", "guided_dep_why", steps, on_complete=self.close)
+            self.help_sidebar = GuidedPanel("deployment", "deployer_title", "guided_dep_why", steps, on_complete=self.close)
             main_layout.addWidget(self.help_sidebar)
 
         # Main Area

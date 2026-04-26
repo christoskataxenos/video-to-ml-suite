@@ -1,31 +1,11 @@
 import json
 import os
 import locale
-
-# Διαχείριση διαδρομών για `config.json`
-def get_config_path():
-    # Επειδή αυτό το αρχείο είναι στο shared/, το config.json είναι στον γονικό φάκελο
-    return os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.json")
+from shared.utils import load_config
 
 def get_current_language():
-    config_path = get_config_path()
-    try:
-        if os.path.exists(config_path):
-            with open(config_path, "r", encoding="utf-8") as f:
-                config = json.load(f)
-                return config.get("language")
-    except:
-        pass
-    
-    # Auto-detect αν δεν βρεθεί ρύθμιση
-    try:
-        sys_lang, _ = locale.getdefaultlocale()
-        if sys_lang and sys_lang.startswith('el'):
-            return "el"
-    except:
-        pass
-    
-    return "en" # Προεπιλογή
+    config = load_config()
+    return config.get("language", "en")
 
 STRINGS = {
     # ------------------ ORCHESTRATOR (DASHBOARD) ------------------

@@ -17,11 +17,10 @@ from PySide6.QtCore import Qt, QThread, Signal
 
 import shared.strings as strings
 from shared.help_wizard import HelpWizard
+from shared.utils import get_resource_path, load_config, save_config
 
 def resource_path(relative_path):
-    if hasattr(sys, '_MEIPASS'):
-        return os.path.join(sys._MEIPASS, relative_path)
-    return os.path.join(os.path.abspath("."), "..", relative_path)
+    return get_resource_path(relative_path)
 
 class EngineWorker(QThread):
     log_signal = Signal(str)
@@ -162,12 +161,7 @@ class App(QMainWindow):
         self.start_time = None
         self.lang = strings.get_current_language()
 
-        self.config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.json")
-        try:
-            with open(self.config_path, "r", encoding="utf-8") as f:
-                self.config = json.load(f)
-        except:
-            self.config = {"mode": "expert"}
+        self.config = load_config()
 
         # Εφαρμογή QSS
         try:
@@ -208,7 +202,7 @@ class App(QMainWindow):
                 {"action": "guided_gen_step4", "edu": "guided_gen_step4_edu"},
                 {"action": "guided_gen_step5", "edu": "guided_gen_step5_edu"}
             ]
-            self.help_sidebar = GuidedPanel(self.config_path, "extraction", "gen_title", "guided_gen_why", steps, on_complete=self.close)
+            self.help_sidebar = GuidedPanel("extraction", "gen_title", "guided_gen_why", steps, on_complete=self.close)
             main_layout.addWidget(self.help_sidebar)
         else:
             self.help_sidebar = QFrame()
@@ -325,14 +319,9 @@ class App(QMainWindow):
         new_lang = "el" if self.lang == "en" else "en"
         self.lang = new_lang
         
-        # Update config.json
-        try:
-            with open(self.config_path, "r", encoding="utf-8") as f:
-                config = json.load(f)
-            config["language"] = new_lang
-            with open(self.config_path, "w", encoding="utf-8") as f:
-                json.dump(config, f, indent=4)
-        except: pass
+        # Update config
+        self.config["language"] = new_lang
+        save_config(self.config)
         
         # Refresh UI
         self.setup_ui()
@@ -555,12 +544,10 @@ class App(QMainWindow):
         self.status_dot.setStyleSheet("color: #FF9800; font-weight: bold;")
         self.start_time = datetime.now()
         
-        if hasattr(sys, '_MEIPASS'):
-            engine_exe = resource_path(os.path.join("engine", "engine.exe"))
-        else:
-            engine_exe = os.path.join(os.path.dirname(__file__), "..", "engine", "build", "Debug", "engine.exe")
-            if not os.path.exists(engine_exe): 
-                engine_exe = os.path.join(os.path.dirname(__file__), "..", "engine", "build", "engine.exe")
+        engine_exe = get_resource_path(self.config.get("engine_path", "engine/engine.exe"))
+        if not os.path.exists(engine_exe):
+             # Try fallback to bundled engine
+             engine_exe = get_resource_path("engine/engine.exe")
 
         cmd = [
             engine_exe, source,

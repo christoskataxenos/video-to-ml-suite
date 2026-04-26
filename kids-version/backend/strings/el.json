@@ -1,0 +1,43 @@
+{
+  "app_title": "PolyMind",
+  "welcome": "Καλώς ήρθες στο PolyMind!",
+  "mascot_greeting": "Γεια σου {name}! Είμαι ο Πόλυ, ο φίλος σου με τεχνητή νοημοσύνη!",
+  "mascot_ready": "Πάμε να μάθουμε κάτι νέο σήμερα!",
+  "parent": {
+    "dashboard_title": "Πίνακας Ελέγχου Γονέα",
+    "child_name_label": "Όνομα Παιδιού",
+    "child_name_placeholder": "Γράψε το όνομα του παιδιού...",
+    "language_label": "Γλώσσα",
+    "annotation_mode_label": "Τρόπος Παιχνιδιού",
+    "annotation_sticker": "Αυτοκόλλητα",
+    "annotation_sticker_desc": "Κόλλα αυτοκόλλητα πάνω στα αντικείμενα — ιδανικό για μικρότερα παιδιά",
+    "annotation_catch": "Πιάσε το Αντικείμενο",
+    "annotation_catch_desc": "Πάτα τα αντικείμενα καθώς εμφανίζονται — ιδανικό για μεγαλύτερα παιδιά",
+    "ui_style_label": "Στυλ Διεπαφής",
+    "ui_mascot": "Μασκότ Οδηγός",
+    "ui_mascot_desc": "Ένας φιλικός χαρακτήρας καθοδηγεί το παιδί βήμα-βήμα",
+    "ui_icon": "Μόνο Εικονίδια",
+    "ui_icon_desc": "Μεγάλα χρωματιστά κουμπιά χωρίς κείμενο — οπτική μάθηση",
+    "ui_audio": "Ηχητική Καθοδήγηση",
+    "ui_audio_desc": "Κάθε κουμπί λέει το όνομά του — βοηθάει στο λεξιλόγιο",
+    "interaction_label": "Μετά την Εκπαίδευση",
+    "interaction_logic": "Μπλοκ Λογικής",
+    "interaction_logic_desc": "Αν η AI δει Χ → Κάνε Υ (σαν το Scratch)",
+    "interaction_story": "Αφηγητής",
+    "interaction_story_desc": "Τα αντικείμενα ζωντανεύουν και μιλούν στο παιδί σου",
+    "launch_button": "Εκκίνηση Λειτουργίας Παιδιού",
+    "save_button": "Αποθήκευση Ρυθμίσεων",
+    "saved_message": "Οι ρυθμίσεις αποθηκεύτηκαν!"
+  },
+  "child": {
+    "home_title": "Πάμε να Παίξουμε!",
+    "start_button": "Ξεκίνα!",
+    "score_label": "Αστέρια",
+    "back_button": "Πίσω"
+  },
+  "languages": {
+    "en": "English",
+    "el": "Ελληνικά",
+    "de": "Deutsch"
+  }
+}

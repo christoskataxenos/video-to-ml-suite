@@ -4,12 +4,12 @@ from PySide6.QtWidgets import (QWidget, QVBoxLayout, QLabel, QPushButton,
                                QFrame, QHBoxLayout, QSizePolicy)
 from PySide6.QtCore import Qt
 from shared.strings import get_string
+from shared.utils import load_config, save_config
 
 class GuidedPanel(QFrame):
-    def __init__(self, config_path, step_id, title_key, why_key, steps_data, on_complete=None, parent=None):
+    def __init__(self, step_id, title_key, why_key, steps_data, on_complete=None, parent=None):
         super().__init__(parent)
         self.setObjectName("HelpSidebar")
-        self.config_path = config_path
         self.step_id = step_id
         self.on_complete = on_complete
         self.setMinimumWidth(280)
@@ -89,12 +89,10 @@ class GuidedPanel(QFrame):
 
     def mark_done(self):
         try:
-            with open(self.config_path, "r", encoding="utf-8") as f:
-                config = json.load(f)
+            config = load_config()
             if self.step_id not in config.get("completed_steps", []):
                 config.setdefault("completed_steps", []).append(self.step_id)
-            with open(self.config_path, "w", encoding="utf-8") as f:
-                json.dump(config, f, indent=4, ensure_ascii=False)
+            save_config(config)
         except Exception as e:
             print("Error marking done:", e)
             

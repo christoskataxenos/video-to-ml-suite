@@ -1,0 +1,43 @@
+{
+  "app_title": "PolyMind",
+  "welcome": "Welcome to PolyMind!",
+  "mascot_greeting": "Hi {name}! I'm Poly, your AI friend!",
+  "mascot_ready": "Let's learn something new today!",
+  "parent": {
+    "dashboard_title": "Parent Dashboard",
+    "child_name_label": "Child's Name",
+    "child_name_placeholder": "Enter your child's name...",
+    "language_label": "Language",
+    "annotation_mode_label": "Game Mode",
+    "annotation_sticker": "Sticker Mode",
+    "annotation_sticker_desc": "Place stickers on objects — best for younger kids",
+    "annotation_catch": "Catch the Object",
+    "annotation_catch_desc": "Tap objects as they appear — best for older kids",
+    "ui_style_label": "Interface Style",
+    "ui_mascot": "Mascot Guide",
+    "ui_mascot_desc": "A friendly character guides your child step by step",
+    "ui_icon": "Icon-First",
+    "ui_icon_desc": "Big colorful buttons with no text — visual learning",
+    "ui_audio": "Audio-Driven",
+    "ui_audio_desc": "Every button speaks its name — helps with vocabulary",
+    "interaction_label": "After Training",
+    "interaction_logic": "Logic Blocks",
+    "interaction_logic_desc": "If the AI sees X → Do Y (like Scratch)",
+    "interaction_story": "Storyteller",
+    "interaction_story_desc": "Objects come alive and talk to your child",
+    "launch_button": "Launch Kids Mode",
+    "save_button": "Save Settings",
+    "saved_message": "Settings saved!"
+  },
+  "child": {
+    "home_title": "Let's Play!",
+    "start_button": "Start!",
+    "score_label": "Stars",
+    "back_button": "Back"
+  },
+  "languages": {
+    "en": "English",
+    "el": "Ελληνικά",
+    "de": "Deutsch"
+  }
+}
