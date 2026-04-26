@@ -2,7 +2,7 @@
 
 [Setup]
 AppName=Video To ML Suite
-AppVersion=1.1
+AppVersion=2.0
 DefaultDirName={autopf}\VideoToMLSuite
 DefaultGroupName=Video To ML Suite
 UninstallDisplayIcon={app}\VideoToMLSuite.exe
